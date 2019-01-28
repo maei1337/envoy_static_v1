@@ -1,0 +1,50 @@
+version: '2'
+services:
+
+  front-envoy:
+    build:
+      context: ./envoy
+      dockerfile: Dockerfile-frontenvoy
+    volumes:
+      - ./envoy/front-envoy.yaml:/etc/front-envoy.yaml
+    networks:
+      - envoymesh
+    expose:
+      - "80"
+      - "8001"
+    ports:
+      - "8000:80"
+      - "8001:8001"
+
+  service1:
+    build:
+      context: ./service
+      dockerfile: Dockerfile-service
+    volumes:
+      - ./service/service-envoy.yaml:/etc/service-envoy.yaml
+    networks:
+      envoymesh:
+        aliases:
+          - service1
+    environment:
+      - SERVICE_NAME=Tittyfucker
+    expose:
+      - "80"
+
+  service2:
+    build:
+      context: ./service
+      dockerfile: Dockerfile-service
+    volumes:
+      - ./service/service-envoy.yaml:/etc/service-envoy.yaml
+    networks:
+      envoymesh:
+        aliases:
+          - service2
+    environment:
+      - SERVICE_NAME=Bootylover
+    expose:
+      - "80"
+
+networks:
+  envoymesh: {}
